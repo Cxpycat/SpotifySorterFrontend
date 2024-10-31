@@ -1,10 +1,16 @@
 <template>
   <div class="about_app">
-    <div class="playlist-container" v-for="playlist in playlists" :key="playlist.id">
+    <div class="playlist-container" v-for="track in playlist">
       <div class="playlist-image-container">
-        <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image">
+        <!--        <video v-if="track.track.preview_url.length > 0" :src="track.track.preview_url" width="150" height="150" class="playlist-image" muted autoplay>-->
+        <!--          <source :src="track.track.preview_url" type="video/mp4">-->
+        <!--          Your browser does not support the video tag.-->
+        <!--        </video>-->
+        <img v-if="track.track.album.images.length > 0" :src="track.track.album.images[0].url" width="150" height="150" class="playlist-image">
+
+
       </div>
-      <h2 class="playlist-name">{{ playlist.name }}</h2>
+      <h2 class="playlist-name">{{ track.track.name }}</h2>
       <router-link :to="`/playlist/${playlist.id}`" class="playlist-link">Перейти</router-link>
     </div>
   </div>
@@ -14,38 +20,25 @@
 import axios from "axios";
 
 export default {
-  name: 'RedirectView',
+  name: 'PlaylistView',
   data() {
     return {
-      playlists: []
+      playlist: {}
     };
   },
 
   mounted() {
-    // this.sendCode()
-    this.getPlaylists()
+    this.getPlaylist()
   },
   methods: {
-    sendCode() {
-      const code = this.$route.query.code;
-      const state = this.$route.query.state;
-      axios.post('http://localhost:8080/auth/code', {
-        code: code,
-        state: state
-      }).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
-      });
-    },
-    getPlaylists() {
-      axios.get('http://localhost:8080/user/playlist', {
+    getPlaylist() {
+      axios.get(`http://localhost:8080/user/playlist/${this.$route.params.id}`, {
         params: {
-          email: "nikoto07@gmail.com"
+          email: "nikoto07@gmail.com",
         }
       }).then(response => {
 
-        this.playlists = response.data.items
+        this.playlist = response.data.items
         console.log(response.data.items);
       }).catch(error => {
         console.log(error);
