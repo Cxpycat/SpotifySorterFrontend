@@ -5,7 +5,7 @@
     </div>
   </div>
   <div class="home_btns_wrapper">
-    <button class="btn" @click="auth()">Авторизоваться spotify</button>
+    <button class="btn" @click="auth()">ты пидор</button>
   </div>
 </template>
 
@@ -36,8 +36,54 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.about_app{
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.btn {
+  width: 30vmin;
+  height: 20vmin;
+  display: grid;
+  position: absolute;
+  place-items: center;
+  top: 17%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-shadow: 0 1px 0 #000;
+  --border-angle: 0turn;
+  --main-bg: conic-gradient(
+      from var(--border-angle),
+      #213,
+      #112 5%,
+      #112 60%,
+      #213 95%
+    );
+  
+  border: solid 5px transparent;
+  border-radius: 2em;
+  --gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #ffffff, #1ed760 99%, transparent);
+  
+  background: 
+    var(--main-bg) padding-box,
+    var(--gradient-border) border-box, 
+    var(--main-bg) border-box;
+  
+  background-position: center;
 
+  animation: bg-spin 3s linear infinite;
+  @keyframes bg-spin {
+    to {
+      --border-angle: 1turn;
+    }
+  }
+}
 
-<!--code=AQDB0GSdd86LWfubY2x6MR-aQ6gRtF0G7Nb5XhgPrBQzqSfhJ4p8AR6coUbsHdbaZoazZPkCMQSKkgwaqBzP1mRRg_wzz8bblgsx1XtmTPxgEn2vy60Yzd478oZ7w28iH4BtPECRgaSRwb2tRcRUEHqMpMlsD1c6U_vDpVFbTES879CprD1XAwGTrdX56Dz0jsYt4h0CKdzn-ZL62EbTWs7sNlVWdw-->
-<!--&-->
-<!--state=WKRwYcnUEjVW5UIa-->
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+</style>
