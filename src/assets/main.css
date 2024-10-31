@@ -1,0 +1,24 @@
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: #212121;
+    color: #F5F5F5;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+#app {
+    margin: 2rem;
+    height: calc(100vh - 4rem);
+    width: calc(100vw - 4rem);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
