@@ -8,7 +8,7 @@ body {
     padding: 0;
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    /*overflow: hidden;*/
     background: #212121;
     color: #F5F5F5;
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -18,7 +18,7 @@ body {
     margin: 2rem;
     height: calc(100vh - 4rem);
     width: calc(100vw - 4rem);
-    overflow: hidden;
+    /*overflow: hidden;*/
     display: flex;
     flex-direction: column;
 }

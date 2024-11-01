@@ -1,14 +1,17 @@
 <template>
   <div class="about_app">
-    <div>
-      Spotify сортировка
+    <div class="header">
+      <h1>Spotify сортировка</h1>
     </div>
   </div>
   <div class="home_btns_wrapper">
     <button class="btn" @click="auth()">Авторизоваться spotify</button>
   </div>
-</template>
 
+  <div class="nav">
+    <router-link to="Playlists" class="nav-link">Playlists</router-link>
+  </div>
+</template>
 <script>
 
 export default {
@@ -37,7 +40,55 @@ export default {
 }
 </script>
 
+<style scoped>
+.about_app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
-<!--code=AQDB0GSdd86LWfubY2x6MR-aQ6gRtF0G7Nb5XhgPrBQzqSfhJ4p8AR6coUbsHdbaZoazZPkCMQSKkgwaqBzP1mRRg_wzz8bblgsx1XtmTPxgEn2vy60Yzd478oZ7w28iH4BtPECRgaSRwb2tRcRUEHqMpMlsD1c6U_vDpVFbTES879CprD1XAwGTrdX56Dz0jsYt4h0CKdzn-ZL62EbTWs7sNlVWdw-->
-<!--&-->
-<!--state=WKRwYcnUEjVW5UIa-->
+.header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.home_btns_wrapper {
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #3e8e41;
+}
+
+.nav {
+  margin-top: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #337ab7;
+}
+
+.nav-link:hover {
+  color: #23527c;
+}
+</style>

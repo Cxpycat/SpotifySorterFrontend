@@ -1,24 +1,28 @@
 <template>
   <div class="about_app">
-    <div>
-      Авторизация прошла успешно
+    <div class="playlist-container" v-for="playlist in playlists" :key="playlist.id">
+      <div class="playlist-image-container">
+        <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image">
+      </div>
+      <h2 class="playlist-name">{{ playlist.name }}</h2>
+      <router-link :to="`/playlist/${playlist.id}`" class="playlist-link">Перейти</router-link>
     </div>
   </div>
 </template>
 
 <script>
-
 import axios from "axios";
 
 export default {
   name: 'RedirectView',
   data() {
-    return {};
+    return {
+      playlists: []
+    };
   },
 
   mounted() {
-    // this.sendCode()
-    this.getPlaylists()
+    this.sendCode()
   },
   methods: {
     sendCode() {
@@ -28,22 +32,10 @@ export default {
         code: code,
         state: state
       }).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
+        localStorage.access_token = response.data.user.access_token;
       });
     },
-    getPlaylists() {
-      axios.get('http://localhost:8080/user/playlist', {
-        params: {
-          email: "nikoto07@gmail.com"
-        }
-      }).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
-      });
-    }
   }
 }
 </script>
+
