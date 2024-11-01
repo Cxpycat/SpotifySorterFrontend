@@ -22,8 +22,7 @@ export default {
   },
 
   mounted() {
-    // this.sendCode()
-    this.getPlaylists()
+    this.sendCode()
   },
   methods: {
     sendCode() {
@@ -33,71 +32,10 @@ export default {
         code: code,
         state: state
       }).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
+        localStorage.access_token = response.data.user.access_token;
       });
     },
-    getPlaylists() {
-      axios.get('http://localhost:8080/user/playlist', {
-        params: {
-          email: "nikoto07@gmail.com"
-        }
-      }).then(response => {
-
-        this.playlists = response.data.items
-        console.log(response.data.items);
-      }).catch(error => {
-        console.log(error);
-      });
-    }
   }
 }
 </script>
 
-<style scoped>
-.about_app {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.playlist-container {
-  margin: 20px;
-  width: 200px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.playlist-image-container {
-  width: 150px;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.playlist-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.playlist-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 10px;
-  text-decoration: underline;
-}
-
-.playlist-link {
-  margin-top: 10px;
-  text-decoration: none;
-  color: #337ab7;
-}
-</style>

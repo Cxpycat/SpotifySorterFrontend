@@ -1,20 +1,15 @@
 <template>
   <div class="about_app">
-    <div class="playlist-container" v-for="track in playlist">
+    <div class="playlist-container" v-for="playlist in playlists" :key="playlist.id">
       <div class="playlist-image-container">
-        <!--        <video v-if="track.track.preview_url.length > 0" :src="track.track.preview_url" width="150" height="150" class="playlist-image" muted autoplay>-->
-        <!--          <source :src="track.track.preview_url" type="video/mp4">-->
-        <!--          Your browser does not support the video tag.-->
-        <!--        </video>-->
-        <img v-if="track.track.album.images.length > 0" :src="track.track.album.images[0].url" width="150" height="150" class="playlist-image">
-
-
+        <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image">
       </div>
-      <h2 class="playlist-name">{{ track.track.name }}</h2>
-      <router-link :to="`/playlist/${playlist.id}`" class="playlist-link">Перейти</router-link>
+      <h2 class="playlist-name">{{ playlist.name }}</h2>
+      <router-link :to="`/playlists/${playlist.id}`" class="playlist-link">Перейти</router-link>
     </div>
   </div>
 </template>
+
 
 <script>
 import api from "@/api.js";
@@ -23,18 +18,17 @@ export default {
   name: 'PlaylistView',
   data() {
     return {
-      playlist: {}
+      playlists: []
     };
   },
 
   mounted() {
-    this.getPlaylist()
+    this.getPlaylists()
   },
   methods: {
-    getPlaylist() {
-      api.get(`/user/playlist/${this.$route.params.id}`).then(response => {
-
-        this.playlist = response.data.items
+    getPlaylists() {
+      api.get('/user/playlist').then(response => {
+        this.playlists = response.data.items
         console.log(response.data.items);
       }).catch(error => {
         console.log(error);
