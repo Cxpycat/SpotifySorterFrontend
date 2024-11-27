@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@twa-dev/sdk": "^7.8.0",
+    "axios": "^1.7.8",
     "vue": "^3.4.29",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.3.3"

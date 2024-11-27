@@ -33,6 +33,7 @@ export default {
         state: state
       }).then(response => {
         localStorage.access_token = response.data.user.access_token;
+        this.$router.push({name: 'Playlists'});
       });
     },
   }

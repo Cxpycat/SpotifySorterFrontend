@@ -23,7 +23,7 @@ export default {
     auth() {
       const client_id = 'e846fad163144ec69ab48ca8fc73d192';
       const redirect_uri = 'http://localhost:5173/redirect';
-      const scope = 'user-read-private user-read-email';
+      const scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative';
 
       window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${this.generateRandomString(16)}`
     },
