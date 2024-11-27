@@ -1,59 +1,95 @@
 <template>
-  <div class="about_app">
-    <div class="playlist-container" v-for="playlist in playlists" :key="playlist.id">
-      <div class="playlist-image-container">
-        <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image">
-      </div>
-      <h2 class="playlist-name">{{ playlist.name }}</h2>
-      <router-link :to="`/playlists/${playlist.id}`" class="playlist-link">Перейти</router-link>
+  <ErrorPopup :message="this.errorRequest"/>
+
+  <!-- Индикатор загрузки -->
+  <div v-if="isLoading" class="loading-indicator">
+    <LoadingComponent text="loading, please wait"/>
+  </div>
+
+  <div v-if="!isLoading">
+
+    <h2 class="header">{{ $t('your playlists') }}</h2>
+
+    <!-- Контейнер для плейлистов -->
+    <div class="playlists-wrapper">
+      <template v-for="playlist in playlists" :key="playlist.id">
+        <div class="playlist-container" v-if="playlist.name">
+          <div class="playlist-image-container">
+            <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image"/>
+          </div>
+          <router-link :to="`/playlists/${playlist.id}`" class="playlist-name">{{ playlist.name }}</router-link>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
-
 <script>
 import api from "@/api.js";
+import ErrorPopup from "@/components/ErrorPopup.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
 
 export default {
   name: 'PlaylistView',
+  components: {LoadingComponent, ErrorPopup},
   data() {
     return {
-      playlists: []
+      playlists: [],
+      isLoading: true,
+      errorRequest: ''
     };
   },
-
   mounted() {
-    this.getPlaylists()
+    this.getPlaylists();
   },
   methods: {
     getPlaylists() {
-      api.get('/user/playlist').then(response => {
-        this.playlists = response.data.items
-        console.log(response.data.items);
-      }).catch(error => {
-        console.log(error);
-      });
+      api.get('/user/playlist')
+          .then(response => {
+            this.playlists = response.data.items;
+            this.isLoading = false;  // данные загружены
+          })
+          .catch(error => {
+            this.errorRequest = 'Ошибка при загрузке плейлистов. Попробуйте позже.';  // обработка ошибки
+            this.isLoading = false;
+          });
     }
   }
 }
 </script>
 
 <style scoped>
-.about_app {
+/* Заголовок */
+.header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-base, #fff);
 }
 
+/* Контейнер с плейлистами */
+.playlists-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+/* Контейнер для каждого плейлиста */
 .playlist-container {
-  margin: 20px;
-  width: 200px;
-  text-align: center;
+  background-color: var(--background-tinted-base, hsla(0, 0%, 100%, .1));
+  border-radius: 10px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
+/* Контейнер изображения */
 .playlist-image-container {
   width: 150px;
   height: 150px;
@@ -61,9 +97,12 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--background-base, #121212);
 }
 
+/* Изображение плейлиста */
 .playlist-image {
   width: 100%;
   height: 100%;
@@ -71,16 +110,26 @@ export default {
   border-radius: 10px;
 }
 
+/* Название плейлиста */
 .playlist-name {
   font-size: 18px;
   font-weight: bold;
-  margin-top: 10px;
-  text-decoration: underline;
+  color: var(--text-base, #fff);
+  text-decoration: none;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
 }
 
-.playlist-link {
-  margin-top: 10px;
-  text-decoration: none;
-  color: #337ab7;
+/* Ссылка на плейлист */
+.playlist-name:hover {
+  color: var(--text-bright-accent, #1ed760);
+}
+
+/* Индикатор загрузки */
+.loading-indicator {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

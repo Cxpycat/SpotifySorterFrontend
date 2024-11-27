@@ -1,31 +1,34 @@
 <template>
-  <div class="about_app">
+  <div class="home-container">
     <div class="header">
-      <h1>Spotify сортировка</h1>
+      <h1>Spotify Sorter</h1>
+      <p>{{ $t('main description') }}</p>
     </div>
-  </div>
-  <div class="home_btns_wrapper">
-    <button class="btn" @click="auth()">Авторизоваться spotify</button>
-  </div>
 
-  <div class="nav">
-    <router-link to="Playlists" class="nav-link">Playlists</router-link>
+    <div class="auth-button">
+      <button-component button-text="Auth with Spotify" @click="auth"/>
+    </div>
+
+    <footer class="footer">
+      <p>{{ $t('footer created by') }}</p>
+      <p>{{ $t('footer contact') }}</p>
+    </footer>
   </div>
 </template>
+
 <script>
+import ButtonComponent from "@/components/ButtonComponent.vue";
 
 export default {
   name: 'HomeView',
-  data() {
-    return {};
-  },
+  components: {ButtonComponent},
   methods: {
     auth() {
       const client_id = 'e846fad163144ec69ab48ca8fc73d192';
       const redirect_uri = 'http://localhost:5173/redirect';
       const scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative';
 
-      window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${this.generateRandomString(16)}`
+      window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${this.generateRandomString(16)}`;
     },
 
     generateRandomString(length) {
@@ -41,54 +44,78 @@ export default {
 </script>
 
 <style scoped>
-.about_app {
+/* Общие стили для страницы */
+.home-container {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  background: var(--background-base, #121212);
+  color: var(--text-base, #fff);
+  text-align: center;
   align-items: center;
-  padding: 20px;
 }
 
-.header {
-  background-color: #333;
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
+/* Заголовок */
 .header h1 {
-  font-size: 24px;
+  font-size: 3rem;
+  margin-bottom: 10px;
   font-weight: bold;
-  margin: 0;
 }
 
-.home_btns_wrapper {
+.header p {
+  font-size: 1.2rem;
+  color: var(--text-base, #fff);
+  margin-top: 2rem;
+}
+
+/* Стили кнопки */
+.auth-button {
+  display: flex;
+  width: 50%;
+}
+
+footer {
+  background-color: var(--background-base, #121212);
+  padding: 1rem;
+  color: var(--text-base, #fff);
+  font-size: 1rem;
+  text-align: center;
   margin-top: 20px;
 }
 
-.btn {
-  background-color: #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+footer p {
+  margin: 5px 0;
 }
 
-.btn:hover {
-  background-color: #3e8e41;
+/* Адаптивность для мобильных устройств */
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header p {
+    font-size: 1rem;
+  }
+
+  .auth-button {
+    width: 80%;
+  }
 }
 
-.nav {
-  margin-top: 20px;
+/* Адаптивность для планшетов и больших экранов */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .header h1 {
+    font-size: 2.5rem;
+  }
+
+  .header p {
+    font-size: 1.1rem;
+  }
+
+  .auth-button {
+    width: 60%;
+  }
 }
 
-.nav-link {
-  text-decoration: none;
-  color: #337ab7;
-}
-
-.nav-link:hover {
-  color: #23527c;
-}
 </style>

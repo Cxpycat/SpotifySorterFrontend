@@ -1,42 +1,63 @@
 <template>
-  <div class="about_app">
-    <div class="playlist-container" v-for="playlist in playlists" :key="playlist.id">
-      <div class="playlist-image-container">
-        <img v-if="playlist.images && playlist.images.length > 0" :src="playlist.images[0].url" width="150" height="150" class="playlist-image">
-      </div>
-      <h2 class="playlist-name">{{ playlist.name }}</h2>
-      <router-link :to="`/playlist/${playlist.id}`" class="playlist-link">Перейти</router-link>
+  <div class="redirect-container">
+    <ErrorPopup :message="this.errorRequest"/>
+
+    <div class="loader">
+      <div class="spinner"></div>
+      <p>{{ $t('authorization') }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import ErrorPopup from "@/components/ErrorPopup.vue";
 
 export default {
   name: 'RedirectView',
+  components: {ErrorPopup},
+
   data() {
     return {
-      playlists: []
-    };
+      errorRequest: ''
+    }
   },
 
   mounted() {
     this.sendCode()
   },
+
   methods: {
     sendCode() {
       const code = this.$route.query.code;
       const state = this.$route.query.state;
+
       axios.post('http://localhost:8080/auth/code', {
         code: code,
         state: state
       }).then(response => {
-        localStorage.access_token = response.data.user.access_token;
+        localStorage.setItem('access_token', response.data.user.access_token);
         this.$router.push({name: 'Playlists'});
+      }).catch(error => {
+        this.errorRequest = this.$t(error.response.data.error)
       });
     },
   }
 }
 </script>
 
+<style scoped>
+/* Стили для контейнера редиректа */
+.redirect-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--background-base, #121212);
+  color: var(--text-base, #fff);
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+}
+
+
+</style>
