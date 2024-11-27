@@ -3,7 +3,7 @@
       :class="['button', buttonType]"
       @click="handleClick"
   >
-    {{ buttonText }}
+    {{ $t(buttonText) }}
   </div>
 </template>
 

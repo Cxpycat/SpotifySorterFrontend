@@ -1,29 +1,48 @@
 <template>
-  <ErrorPopup :message="this.errorRequest"/>
+  <ErrorPopup :message="errorRequest"/>
 
+  <h2 class="header">{{ $t('tracks') }}</h2>
+
+  <!-- Блок выбора сортировки -->
+  <div class="wrapper-select">
+    <select v-model="sortBy">
+      <!--      <option value="date_added_recent">{{ $t('date Added (Recent First)') }}</option>-->
+      <!--      <option value="date_added_oldest">{{ $t('date Added (Oldest First)') }}</option>-->
+      <!--      <option value="release_date_recent">{{ $t('release Date (Newest First)') }}</option>-->
+      <!--      <option value="release_date_oldest">{{ $t('release Date (Oldest First)') }}</option>-->
+      <!--      <option value="artist_alphabetical">{{ $t('artist Alphabetical (A-Z)') }}</option>-->
+      <!--      <option value="artist_alphabetical_reverse">{{ $t('artist Alphabetical (Z-A)') }}</option>-->
+      <!--      <option value="track_alphabetical">{{ $t('track Alphabetical (A-Z)') }}</option>-->
+      <!--      <option value="track_alphabetical_reverse">{{ $t('track Alphabetical (Z-A)') }}</option>-->
+      <option value="popularity">{{ $t('popularity (High-Low)') }}</option>
+      <!--      <option value="popularity_reverse">{{ $t('popularity (Low-High)') }}</option>-->
+    </select>
+  </div>
+
+  <!-- Кнопка для сортировки -->
+  <div class="wrapper-button">
+    <button-component button-text="sort" @click="sortPlaylist"/>
+  </div>
+
+  <!-- Список треков -->
   <div class="playlist-list">
-    <h2 class="header">{{ $t('tracks') }}</h2>
-    <div v-if="playlist && playlist.length === 0 && !errorRequest" class="loading-indicator">
+
+    <!-- Загрузка или ошибки -->
+    <div v-if="isLoading" class="loading-indicator">
       <LoadingComponent text="loading, please wait"/>
     </div>
-    <div v-if="errorRequest && errorRequest !== 'unauthorized'" class="loading-indicator">
-      <button-component button-text="Retry" @click="getPlaylist"/>
-    </div>
+
     <div v-if="errorRequest === 'unauthorized'" class="unauthorized-error">
-      <button-component button-text="Login" @click="goToLoginPage"/>
+      <ButtonComponent button-text="login" @click="goToLoginPage"/>
     </div>
-    <div v-for="track in playlist" :key="track.id" class="track-row">
-      <div class="track-image-container">
-        <img v-if="track.track.album.images.length > 0" :src="track.track.album.images[0].url" class="track-image" alt="Album Cover">
-      </div>
 
-      <div class="track-info">
-        <div class="track-title">
-          <span>{{ track.track.name }}</span>
-        </div>
+    <div v-if="errorRequest && errorRequest !== 'unauthorized'" class="retry-error">
+      <ButtonComponent button-text="retry" @click="getPlaylist"/>
+    </div>
 
-        <p class="track-artist">{{ track.track.artists[0].name }}</p>
-      </div>
+    <!-- Список треков -->
+    <div v-for="track in playlist" :key="track.id">
+      <TrackComponent :track="track"/>
     </div>
   </div>
 </template>
@@ -33,15 +52,17 @@ import api from "@/api.js";
 import ErrorPopup from "@/components/ErrorPopup.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
+import TrackComponent from "@/components/TrackComponent.vue";
 
 export default {
   name: 'PlaylistView',
-  components: {ButtonComponent, LoadingComponent, ErrorPopup},
+  components: {TrackComponent, ButtonComponent, LoadingComponent, ErrorPopup},
   data() {
     return {
       playlist: [],
-      sortParam: 'popularity',
-      errorRequest: ''
+      sortBy: 'popularity',
+      errorRequest: '',
+      isLoading: true
     };
   },
   mounted() {
@@ -49,13 +70,18 @@ export default {
   },
   methods: {
     getPlaylist() {
+      this.isLoading = true;
       api.get(`/user/playlist/${this.$route.params.id}`).then(response => {
         this.playlist = response.data.items;
-        console.log(response.data.items);
+        this.isLoading = false;
       }).catch(error => {
+        console.log(error.response.data.error)
+        this.isLoading = false;
         this.errorRequest = error.response.data.error
-
       });
+    },
+    goToLoginPage() {
+      this.$router.push({name: 'Home'});
     },
     sortPlaylist() {
       api.post(`/user/playlist/${this.$route.params.id}/sort`, {sort_param: this.sortParam}).then(response => {
@@ -63,78 +89,78 @@ export default {
       }).catch(error => {
         this.errorRequest = error.response.data.error
       });
-    },
-    goToLoginPage() {
-      this.$router.push({name: 'Home'});
     }
   }
 }
 </script>
 
 <style scoped>
-/* Основной контейнер для списка плейлистов */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-base, #fff);
+}
+
+/* Стили для wrapper-select */
+.wrapper-select {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+}
+
+select {
+  background-color: var(--background-highlight, #1f1f1f);
+  color: var(--text-base, #fff);
+  padding: 0.5rem;
+  border: 1px solid var(--essential-subdued, #7c7c7c);
+  font-size: 14px;
+  border-radius: 5px;
+  width: 100%;
+  appearance: none; /* Убираем стандартный стиль стрелочки */
+  -webkit-appearance: none; /* Для Safari */
+  -moz-appearance: none; /* Для Firefox */
+  position: relative;
+}
+
+select:focus {
+  border: 1px solid var(--essential-subdued, #7c7c7c);
+  outline: none;
+}
+
+/* Стили для wrapper-button */
+.wrapper-button {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+
+.wrapper-button {
+  display: flex;
+  margin-bottom: 2rem;
+}
+
 .playlist-list {
-  padding: 2rem;
-  background-color: #121212;
-  color: #fff;
+  background-color: var(--background-base, #121212);
+  color: var(--text-base, #fff);
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-/* Строка с информацией о треке */
-.track-row {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: var(--background-tinted-base, hsla(0, 0%, 100%, .1));
-  border-radius: 10px;
-}
-
-/* Контейнер для изображения */
-.track-image-container {
-  width: 60px;
-  height: 60px;
+.loading-indicator {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  border-radius: 10px;
-  margin-right: 15px;
+  height: 200px;
 }
 
-.track-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Информация о треке */
-.track-info {
-  flex-grow: 1;
-  overflow: hidden;
-}
-
-.track-title {
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--text-base, #fff);
-  text-decoration: none;
-  display: block;
-  margin-bottom: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.track-artist {
-  font-size: 14px;
-  color: var(--text-subdued, #b3b3b3);
-  margin: 0;
-}
-
-.unauthorized-error, .loading-indicator {
+.retry-error,
+.unauthorized-error {
   margin-top: 2rem;
 }
-
 </style>
