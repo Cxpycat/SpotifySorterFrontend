@@ -1,52 +1,47 @@
 <template>
-  <div class="about_app">
-    <!-- Панель для сортировки -->
-    <div class="sort-panel">
-      <button class="sort-button" @click="sortPlaylist">Отсортировать</button>
-      <select class="sort-select" v-model="sortParam">
-        <option value="popularity">По популярности</option>
-      </select>
-    </div>
+  <ErrorPopup :message="this.errorRequest"/>
 
-    <!-- Таблица -->
-    <table class="playlist-table">
-      <thead>
-      <tr>
-        <th>Обложка</th>
-        <th>Название</th>
-        <th>Исполнитель</th>
-        <th>Альбом</th>
-        <th>Дата выпуска</th>
-        <th>Длительность</th>
-        <th>Популярность</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="track in playlist" :key="track.id">
-        <td>
-          <img v-if="track.track.album.images.length > 0" :src="track.track.album.images[0].url" width="50" height="50" alt="Album Cover">
-        </td>
-        <td>{{ track.track.name }}</td>
-        <td>{{ track.track.artists[0].name }}</td>
-        <td>{{ track.track.album.name }}</td>
-        <td>{{ track.track.album.release_date }}</td>
-        <td>{{ Math.floor(track.track.duration_ms / 60000) }}:{{ ((track.track.duration_ms % 60000) / 1000).toFixed(0) }}</td>
-        <td>{{ track.track.popularity }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="playlist-list">
+    <h2 class="header">{{ $t('tracks') }}</h2>
+    <div v-if="playlist && playlist.length === 0 && !errorRequest" class="loading-indicator">
+      <LoadingComponent text="loading, please wait"/>
+    </div>
+    <div v-if="errorRequest && errorRequest !== 'unauthorized'" class="loading-indicator">
+      <button-component button-text="Retry" @click="getPlaylist"/>
+    </div>
+    <div v-if="errorRequest === 'unauthorized'" class="unauthorized-error">
+      <button-component button-text="Login" @click="goToLoginPage"/>
+    </div>
+    <div v-for="track in playlist" :key="track.id" class="track-row">
+      <div class="track-image-container">
+        <img v-if="track.track.album.images.length > 0" :src="track.track.album.images[0].url" class="track-image" alt="Album Cover">
+      </div>
+
+      <div class="track-info">
+        <div class="track-title">
+          <span>{{ track.track.name }}</span>
+        </div>
+
+        <p class="track-artist">{{ track.track.artists[0].name }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import api from "@/api.js";
+import ErrorPopup from "@/components/ErrorPopup.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
+import ButtonComponent from "@/components/ButtonComponent.vue";
 
 export default {
   name: 'PlaylistView',
+  components: {ButtonComponent, LoadingComponent, ErrorPopup},
   data() {
     return {
-      playlist: [],  // Исходный список треков
-      sortParam: 'popularity'  // Критерий сортировки
+      playlist: [],
+      sortParam: 'popularity',
+      errorRequest: ''
     };
   },
   mounted() {
@@ -58,109 +53,88 @@ export default {
         this.playlist = response.data.items;
         console.log(response.data.items);
       }).catch(error => {
-        console.log(error);
+        this.errorRequest = error.response.data.error
+
       });
     },
     sortPlaylist() {
       api.post(`/user/playlist/${this.$route.params.id}/sort`, {sort_param: this.sortParam}).then(response => {
         console.log(response);
       }).catch(error => {
-        console.log(error);
+        this.errorRequest = error.response.data.error
       });
+    },
+    goToLoginPage() {
+      this.$router.push({name: 'Home'});
     }
   }
 }
 </script>
 
 <style scoped>
-.about_app {
+/* Основной контейнер для списка плейлистов */
+.playlist-list {
+  padding: 2rem;
+  background-color: #121212;
+  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #181818; /* Темный фон для всего контейнера */
-  color: #f1f1f1; /* Светлый текст по умолчанию */
+  gap: 1rem;
 }
 
-.sort-panel {
+/* Строка с информацией о треке */
+.track-row {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--background-tinted-base, hsla(0, 0%, 100%, .1));
+  border-radius: 10px;
+}
+
+/* Контейнер для изображения */
+.track-image-container {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+.track-image {
   width: 100%;
-  max-width: 1200px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #292929; /* Темный фон панели сортировки */
-  border-radius: 5px;
+  height: 100%;
+  object-fit: cover;
 }
 
-.sort-button {
-  padding: 10px 20px;
-  background-color: #7e48e5; /* Цвет кнопки */
-  color: white;
+/* Информация о треке */
+.track-info {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.track-title {
   font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.sort-button:hover {
-  background-color: #9acd32; /* Цвет кнопки при наведении */
-}
-
-.sort-select {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #444444; /* Темная рамка для селектора */
-  border-radius: 5px;
-  background-color: #333333; /* Темный фон для селектора */
-  color: #f1f1f1;
-}
-
-.playlist-table {
-  width: 100%;
-  max-width: 1200px;
-  border-collapse: collapse;
-  margin: 20px;
-  background-color: #282828; /* Темный фон таблицы */
-  color: #f1f1f1; /* Белый текст в таблице */
-}
-
-.playlist-table th, .playlist-table td {
-  padding: 12px 15px;
-  border: 1px solid #444444; /* Темный бордер для ячеек */
-}
-
-.playlist-table th {
-  background-color: #7e48e5; /* Заголовки с вашим цветом */
-  color: #f1f1f1; /* Белый цвет текста для контраста */
   font-weight: bold;
+  color: var(--text-base, #fff);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.playlist-table tr:nth-child(even) {
-  background-color: #333333; /* Темный фон для четных строк */
+.track-artist {
+  font-size: 14px;
+  color: var(--text-subdued, #b3b3b3);
+  margin: 0;
 }
 
-.playlist-table tr:nth-child(odd) {
-  background-color: #292929; /* Чуть светлее для нечетных строк */
+.unauthorized-error, .loading-indicator {
+  margin-top: 2rem;
 }
 
-.playlist-table td {
-  color: #d3d3d3; /* Светлый серый для текста ячеек */
-}
-
-.playlist-table td img {
-  border-radius: 5px;
-  border: 2px solid #9acd38; /* Бордер для обложек */
-}
-
-/* Эффект наведения на строку */
-.playlist-table tr:hover {
-  background-color: #87cb06; /* Яркий зеленый при наведении */
-  color: #181818; /* Темный текст на ярком фоне */
-}
-
-.playlist-table th:hover {
-  background-color: #638621; /* Темный зеленый для заголовков при наведении */
-}
 </style>

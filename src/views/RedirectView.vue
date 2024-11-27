@@ -39,7 +39,7 @@ export default {
         localStorage.setItem('access_token', response.data.user.access_token);
         this.$router.push({name: 'Playlists'});
       }).catch(error => {
-        this.errorRequest = this.$t(error.response.data.error)
+        this.errorRequest = error.response.data.error
       });
     },
   }

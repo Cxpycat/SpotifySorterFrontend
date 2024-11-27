@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div v-if="visible" class="error-popup">
-      <p>{{ message }}</p>
+      <p>{{ $t(message) }}</p>
     </div>
   </transition>
 </template>
@@ -31,7 +31,7 @@ export default {
     show() {
       this.visible = true;
       setTimeout(() => {
-        this.visible = false;
+        // this.visible = false;
       }, 5000);
     }
   }
@@ -53,6 +53,10 @@ export default {
   width: 80%;
   background-color: var(--essential-negative, #ed2c3f);
   color: var(--text-base, #fff);
+}
+
+.error-popup p {
+  text-align: center;
 }
 
 .fade-enter-active, .fade-leave-active {

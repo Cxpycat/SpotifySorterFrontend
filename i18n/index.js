@@ -9,6 +9,8 @@ const messages = {
         'failed to get user data': 'Failed to get user data',
         'loading, please wait': 'Loading, please wait',
         'your playlists': 'Your playlists',
+        'tracks': 'Tracks',
+        'unauthorized': 'An error has occurred, please log in again',
     },
     ru: {}
 };
