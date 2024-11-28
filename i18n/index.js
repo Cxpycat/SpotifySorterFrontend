@@ -3,8 +3,9 @@ import {createI18n} from 'vue-i18n';
 const messages = {
     en: {
         'main description': 'Organize your Spotify playlists with ease',
+        'auth with spotify': 'auth with Spotify',
         'footer created by': 'Created by Cxpycat',
-        'footer contact': 'Contact: nikoto07@gmail.com',
+        'footer contact': 'Contact: ',
         'authorization': 'Authorization in progress...',
         'failed to get user data': 'Failed to get user data',
         'loading, please wait': 'Loading, please wait',
@@ -25,8 +26,9 @@ const messages = {
     },
     ru: {
         'main description': 'Организуйте свои плейлисты на Spotify с легкостью',
+        'auth with spotify': 'Авторизация с помощью Spotify',
         'footer created by': 'Создано Cxpycat',
-        'footer contact': 'Контакт: nikoto07@gmail.com',
+        'footer contact': 'Контакт: ',
         'authorization': 'Авторизация в процессе...',
         'failed to get user data': 'Не удалось получить данные пользователя',
         'loading, please wait': 'Загрузка, пожалуйста, подождите',
@@ -50,7 +52,7 @@ const messages = {
 
 const i18n = createI18n({
     legacy: false,
-    locale: 'ru',
+    locale: 'en',
     messages,
 });
 

@@ -3,8 +3,7 @@
     <ErrorPopup :message="this.errorRequest"/>
 
     <div class="loader">
-      <div class="spinner"></div>
-      <p>{{ $t('authorization') }}</p>
+      <LoadingComponent text="authorization"/>
     </div>
   </div>
 </template>
@@ -12,10 +11,11 @@
 <script>
 import axios from "axios";
 import ErrorPopup from "@/components/ErrorPopup.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
 
 export default {
   name: 'RedirectView',
-  components: {ErrorPopup},
+  components: {LoadingComponent, ErrorPopup},
 
   data() {
     return {

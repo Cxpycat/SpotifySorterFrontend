@@ -6,12 +6,12 @@
     </div>
 
     <div class="auth-button">
-      <button-component button-text="Auth with Spotify" @click="auth"/>
+      <button-component button-text="auth with spotify" @click="auth"/>
     </div>
 
     <footer class="footer">
-      <p>{{ $t('footer created by') }}</p>
-      <p>{{ $t('footer contact') }}</p>
+      <p>{{ $t('footer created by') }} </p>
+      <p>{{ $t('footer contact') }} <a href="https://t.me/Cxpycat" target="_blank">@cxpycat</a></p>
     </footer>
   </div>
 </template>
@@ -27,7 +27,6 @@ export default {
       const client_id = 'e846fad163144ec69ab48ca8fc73d192';
       const redirect_uri = 'http://localhost:5173/redirect';
       const scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative';
-
       window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${this.generateRandomString(16)}`;
     },
 
@@ -101,6 +100,14 @@ footer p {
   .auth-button {
     width: 80%;
   }
+}
+
+.footer a {
+  color: var(--text-base, #fff);
+}
+
+.footer a:hover {
+  color: var(--text-bright-accent, #1ed760);
 }
 
 /* Адаптивность для планшетов и больших экранов */
