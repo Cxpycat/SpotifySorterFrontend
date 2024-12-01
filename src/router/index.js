@@ -3,13 +3,14 @@ import HomeView from "@/views/HomeView.vue";
 import RedirectView from "@/views/RedirectView.vue";
 import PlaylistView from "@/views/PlaylistView.vue";
 import PlaylistsView from "@/views/PlaylistsView.vue";
+import LogoutView from "@/views/LogoutView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
-            name: 'Home',
+            name: 'Login',
             component: HomeView
         }, {
             path: '/redirect',
@@ -23,6 +24,10 @@ const router = createRouter({
             path: '/playlists/:id',
             name: 'Playlist',
             component: PlaylistView
+        }, {
+            path: '/logout',
+            name: 'Logout',
+            component: LogoutView
         },
     ]
 })

@@ -1,7 +1,14 @@
 <template>
   <ErrorPopup :message="this.errorRequest"/>
 
-  <!-- Индикатор загрузки -->
+  <template v-if="errorRequest === 'unauthorized'">
+    <ErrorAuthorizationComponent/>
+  </template>
+
+  <template v-if="errorRequest && errorRequest !== 'unauthorized'">
+    <ButtonComponent button-text="retry" @click="getPlaylists"/>
+  </template>
+
   <div v-if="isLoading" class="loading-indicator">
     <LoadingComponent text="loading, please wait"/>
   </div>
@@ -22,16 +29,21 @@
       </template>
     </div>
   </div>
+
+  <MenuComponent active-button="playlists"/>
 </template>
 
 <script>
 import api from "@/api.js";
 import ErrorPopup from "@/components/ErrorPopup.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
+import MenuComponent from "@/components/MenuComponent.vue";
+import ErrorAuthorizationComponent from "@/components/ErrorAuthorizationComponent.vue";
+import ButtonComponent from "@/components/ButtonComponent.vue";
 
 export default {
   name: 'PlaylistView',
-  components: {LoadingComponent, ErrorPopup},
+  components: {ButtonComponent, ErrorAuthorizationComponent, MenuComponent, LoadingComponent, ErrorPopup},
   data() {
     return {
       playlists: [],
@@ -47,11 +59,10 @@ export default {
       api.get('/user/playlist')
           .then(response => {
             this.playlists = response.data.items;
-            this.isLoading = false;  // данные загружены
+            this.isLoading = false;
           })
           .catch(error => {
-            this.errorRequest = 'Ошибка при загрузке плейлистов. Попробуйте позже.';  // обработка ошибки
-            this.isLoading = false;
+            this.errorRequest = error.response.data.error
           });
     }
   }

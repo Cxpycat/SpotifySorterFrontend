@@ -31,7 +31,7 @@ export default {
     show() {
       this.visible = true;
       setTimeout(() => {
-        // this.visible = false;
+        this.visible = false;
       }, 5000);
     }
   }

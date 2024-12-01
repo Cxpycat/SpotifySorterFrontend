@@ -32,9 +32,9 @@
       <LoadingComponent text="loading, please wait"/>
     </div>
 
-    <div v-if="errorRequest === 'unauthorized'" class="unauthorized-error">
-      <ButtonComponent button-text="login" @click="goToLoginPage"/>
-    </div>
+    <template v-if="errorRequest === 'unauthorized'">
+      <ErrorAuthorizationComponent></ErrorAuthorizationComponent>
+    </template>
 
     <div v-if="errorRequest && errorRequest !== 'unauthorized'" class="retry-error">
       <ButtonComponent button-text="retry" @click="getPlaylist"/>
@@ -53,10 +53,11 @@ import ErrorPopup from "@/components/ErrorPopup.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import TrackComponent from "@/components/TrackComponent.vue";
+import ErrorAuthorizationComponent from "@/components/ErrorAuthorizationComponent.vue";
 
 export default {
   name: 'PlaylistView',
-  components: {TrackComponent, ButtonComponent, LoadingComponent, ErrorPopup},
+  components: {ErrorAuthorizationComponent, TrackComponent, ButtonComponent, LoadingComponent, ErrorPopup},
   data() {
     return {
       playlist: [],
@@ -79,9 +80,6 @@ export default {
         this.isLoading = false;
         this.errorRequest = error.response.data.error
       });
-    },
-    goToLoginPage() {
-      this.$router.push({name: 'Home'});
     },
     sortPlaylist() {
       api.post(`/user/playlist/${this.$route.params.id}/sort`, {sort_param: this.sortParam}).then(response => {
@@ -157,10 +155,5 @@ select:focus {
   justify-content: center;
   align-items: center;
   height: 200px;
-}
-
-.retry-error,
-.unauthorized-error {
-  margin-top: 2rem;
 }
 </style>

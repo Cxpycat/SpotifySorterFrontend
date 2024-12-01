@@ -8,6 +8,9 @@
       <div class="track-title">{{ track.track.name }}</div>
       <p class="track-artist">{{ track.track.artists[0].name }}</p>
     </div>
+    <div class="track-popularity">
+      {{ track.track.popularity }}
+    </div>
   </div>
 </template>
 

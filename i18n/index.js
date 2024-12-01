@@ -3,7 +3,7 @@ import {createI18n} from 'vue-i18n';
 const messages = {
     en: {
         'main description': 'Organize your Spotify playlists with ease',
-        'auth with spotify': 'auth with Spotify',
+        'auth with spotify': 'Auth with Spotify',
         'footer created by': 'Created by Cxpycat',
         'footer contact': 'Contact: ',
         'authorization': 'Authorization in progress...',
@@ -23,6 +23,10 @@ const messages = {
         'track Alphabetical (Z-A)': 'Track Alphabetical (Z-A)',
         'popularity (High-Low)': 'Popularity (High-Low)',
         'popularity (Low-High)': 'Popularity (Low-High)',
+        'home': 'Home',
+        'logout': 'Logout',
+        'relogin': 'Relogin',
+        'playlists': 'Playlists',
     },
     ru: {
         'main description': 'Организуйте свои плейлисты на Spotify с легкостью',
